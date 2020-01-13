@@ -138,7 +138,9 @@ def zhifu_zhishi(jieqi, daygangzhi, hourgangzhi):
         zhifu_zhishi_num = kok_num + shun_num -1
         if zhifu_zhishi_num > 9 :
             zhifu_zhishi_num = zhifu_zhishi_num - 9
-           
+        if zhifu_zhishi_num < 0:
+            zhifu_zhishi_num = zhifu_zhishi_num + 9
+            
         if hourgangzhi[0] == "甲":
             zhifu_lokgong = zhifu_zhishi_num + hourgang_num  - 1
         elif hourgangzhi[0] != "甲":
@@ -151,13 +153,15 @@ def zhifu_zhishi(jieqi, daygangzhi, hourgangzhi):
         zhishi_lokgong = zhifu_zhishi_num + hourgang_num - 1
         if zhishi_lokgong > 9:
             zhishi_lokgong = zhishi_lokgong-9
-        elif zhishi_lokgong > 9:
-            zhishi_lokgong = zhishi_lokgong-9
+        elif zhishi_lokgong < 0:
+            zhishi_lokgong = zhishi_lokgong+9
 
     elif qimen_ju[0] == "陰":
         zhifu_zhishi_num = 1 + kok_num - shun_num
         if zhifu_zhishi_num > 9 :
             zhifu_zhishi_num = zhifu_zhishi_num - 9
+        if zhifu_zhishi_num < 0 :
+            zhifu_zhishi_num = zhifu_zhishi_num + 9
         
         if hourgangzhi[0] == "甲":
             zhifu_lokgong = zhifu_zhishi_num + hourgang_num - 1
@@ -172,13 +176,13 @@ def zhifu_zhishi(jieqi, daygangzhi, hourgangzhi):
         
         if zhishi_lokgong > 9:
             zhishi_lokgong = zhishi_lokgong-9
-        elif zhishi_lokgong > 9:
-            zhishi_lokgong = zhishi_lokgong-9
+        elif zhishi_lokgong < 9:
+            zhishi_lokgong = zhishi_lokgong+9
     zhifugong = gong_dict.get(zhifu_lokgong)
     zhishigong = gong_dict.get(zhishi_lokgong)
     if gong_dict.get(zhifu_lokgong) == "中":
         zhifugong = zhishigong
-    result = [{"值符":[star_dict.get(zhifu_zhishi_num), zhifugong ], "直使":[door_dict.get(zhifu_zhishi_num), zhishigong ]}]
+    result = [{"值符":[star_dict.get(zhifu_zhishi_num), zhifugong ], "直使":[door_dict.get(zhifu_zhishi_num), zhishigong ]}, zhifu_zhishi_num]
     return result
 
 def qimen(jieqi, daygangzhi, hourgangzhi):
@@ -191,7 +195,7 @@ def qimen(jieqi, daygangzhi, hourgangzhi):
     star_new_dict = dict(zip(new_list(eight_gua2,zhifu_lokgong_g), new_list(eight_star2, zhifu_lokgong_o)))
     try:
         if zhishi_lokgong_g != "中":
-            door_new_dict = dict(zip(new_list(eight_gua2,zhishi_lokgong_g), new_list(eight_door2, zhishi_lokgong_o)))
+            door_new_dict = dict(zip(new_list(eight_gua,zhishi_lokgong_g), new_list(eight_door, zhishi_lokgong_o)))
         elif zhishi_lokgong_g == "中":
             door_new_dict = dict(zip(new_list(eight_gua2,eight_gua3[eight_gua3.index(zhifu_lokgong_g)+1]), new_list(eight_door, zhishi_lokgong_o)))
     except ValueError:
@@ -224,9 +228,9 @@ def qimen(jieqi, daygangzhi, hourgangzhi):
         tianyi = [sky_pan.get(sky_pan2.get(yi)),sky_pan2.get(yi), door_new_dict.get(sky_pan2.get(yi)), god_new_dict.get(sky_pan2.get(yi)), star_new_dict.get(sky_pan2.get(yi))]
     elif sky_pan2.get(yi) == None:
         yi = earth_pan.get(zhifu_zhishi1[0]["值符"][1])
-        tianyi = [yi, door_new_dict.get(sky_pan2.get(yi)), god_new_dict.get(sky_pan2.get(yi)), star_new_dict.get(sky_pan2.get(yi))]  
+        tianyi = [yi, sky_pan2.get(yi),door_new_dict.get(sky_pan2.get(yi)), god_new_dict.get(sky_pan2.get(yi)), star_new_dict.get(sky_pan2.get(yi))]  
     return  {"排局": [qimen_ju, jieqi, daygangzhi+"日", hourgangzhi+"時"], "空亡":daykong_shikong(daygangzhi,hourgangzhi) , "值符":zhifu_zhishi1[0]["值符"], "直使":zhifu_zhishi1[0]["直使"], "天乙":tianyi, "天地盤":{ "地盤":earth_pan, "天盤":sky_pan}, "八星":star_new_dict, "八門":door_new_dict, "八神":god_new_dict}, d
 
-#print(qimen("小寒", "甲寅", "壬申"))
+print(qimen("處暑", '丁酉', '辛丑'))
 #print(qimen("小寒", "甲寅", "癸酉"))
 #print(shun( "辛未"))
