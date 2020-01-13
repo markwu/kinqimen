@@ -1,30 +1,27 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jan  5 17:01:10 2020
+Created on Sun Jan 12 16:05:37 2019
 
-@author: hooki
+@author: ken tang
+@email: kinyeah@gmail.com
 """
-
-
-ordernum = list(range(1,10))
-eight_door = list("休死傷杜中開驚生景")
-eight_star = list("蓬芮沖輔禽心柱任英")
-eight_gua = list("坎坤震巽中乾兌艮離")
-
-eight_door_orderlist = list("休生傷杜景死驚開")
-eight_star_orderlist = list("蓬任沖輔英芮柱心")
-eight_gods_yinyang = {"陽遁":list("符蛇陰合勾朱地天"), "陰遁":list("符天地玄白合陰蛇")}
-
 
 Gan = list("甲乙丙丁戊己庚辛壬癸")
 Zhi = list("子丑寅卯辰巳午未申酉戌亥")
+eight_door = list("休死傷杜中開驚生景")
+eight_star = list("蓬芮沖輔禽心柱任英")
+eight_star2 = list("蓬任沖輔英芮柱心")
+eight_gua2 = list("震巽離坤兌乾坎艮")
+eight_door2 = list("開休生傷杜景死驚")
 
+eight_gua = list("坎坤震巽中乾兌艮離")
+eight_gua3 = list("坎坤震巽中乾兌艮離")
+eight_gods_yinyang = {"陽遁":list("符蛇陰合勾朱地天"), "陰遁":list("符天地玄白合陰蛇")}
 hourgang_dict = dict(zip(Gan, list(range(1,11))))
 gong_dict = dict(zip(list(range(1,10)), eight_gua))
 door_dict = dict(zip(list(range(1,10)), eight_door))
 star_dict = dict(zip(list(range(1,10)), eight_star))
-
-jia_hidden_dict = { "甲子":"戊", "甲戌":"己", "甲申":"庚", "甲午":"辛", "甲辰":"壬","甲壬":"癸"}
+hidden_jia = {'甲子':'戊', '甲戌':'己','甲申':'庚','甲午':'辛','甲辰':'壬','甲寅':'癸' }
 
 def new_list_r(olist, o):
     zhihead_code = olist.index(o)
@@ -75,7 +72,7 @@ def ganzhiyear(year):
     year_ganzhi = Gan[year_gan_code-1] + Zhi[year_zhi_code-1]
     result = year_ganzhi[0]
     if result == "甲":
-        result = jia_hidden_dict.get(year_ganzhi)
+        result = hidden_jia.get(year_ganzhi)
     return result, year_ganzhi
 
 def qimen_ju_name(jieqi, daygangzhi):
@@ -127,7 +124,6 @@ def zhifu_zhishi(jieqi, daygangzhi, hourgangzhi):
     kok_num_dict = dict(zip(list("一二三四五六七八九"), list(range(1,10))))
     shun_num_dict = dict(zip(list("戊己庚辛壬癸"), list(range(1,7))))
     sanqiliuyi_dict = {"乙":9, "戊":1, "己":2, "庚":3, "辛":4, "壬":5, "癸":6, "丙":8, "丁":7}
-    hidden_jia = {'甲子':'戊', '甲戌':'己','甲申':'庚','甲午':'辛','甲辰':'壬','甲寅':'癸' }
     shun_num = shun_num_dict.get(shun1)
     kok_num = kok_num_dict.get(qimen_ju[2])
     if hourgangzhi[0] == "甲":
@@ -192,8 +188,14 @@ def qimen(jieqi, daygangzhi, hourgangzhi):
     zhifu_lokgong_g = zhifu_zhishi(jieqi, daygangzhi, hourgangzhi)[0].get("值符")[1]
     zhishi_lokgong_o = zhifu_zhishi(jieqi, daygangzhi, hourgangzhi)[0].get("直使")[0]
     zhishi_lokgong_g = zhifu_zhishi(jieqi, daygangzhi, hourgangzhi)[0].get("直使")[1]
-    star_new_dict = dict(zip(new_list(eight_gua,zhifu_lokgong_g), new_list(eight_star, zhifu_lokgong_o)))
-    door_new_dict = dict(zip(new_list(eight_gua,zhishi_lokgong_g), new_list(eight_door, zhishi_lokgong_o)))
+    star_new_dict = dict(zip(new_list(eight_gua2,zhifu_lokgong_g), new_list(eight_star2, zhifu_lokgong_o)))
+    try:
+        if zhishi_lokgong_g != "中":
+            door_new_dict = dict(zip(new_list(eight_gua2,zhishi_lokgong_g), new_list(eight_door2, zhishi_lokgong_o)))
+        elif zhishi_lokgong_g == "中":
+            door_new_dict = dict(zip(new_list(eight_gua2,eight_gua3[eight_gua3.index(zhifu_lokgong_g)+1]), new_list(eight_door, zhishi_lokgong_o)))
+    except ValueError:
+         door_new_dict = dict(zip(new_list(eight_gua2,zhishi_lokgong_g), new_list(eight_door2, zhishi_lokgong_o)))
     if qimen_ju[0] == "陽":
         god_new_dict = dict(zip(new_list(list("兌乾坎艮震巽離坤"), zhifu_lokgong_g),eight_gods_yinyang.get("陽遁")))
         yang_dun_lei = dict(zip(list("一二三四五六七八九"), list("乙丙丁癸壬辛庚己戊")))
@@ -207,8 +209,24 @@ def qimen(jieqi, daygangzhi, hourgangzhi):
     earth_pan_list = list(earth_pan.values())
     del earth_pan_list[5]
     sky_pan = dict(zip(new_list(list("坎艮震巽離坤兌乾"), zhifu_lokgong_g),  new_list([earth_pan.get(i) for i in list("坎艮震巽離坤兌乾")], shun(hourgangzhi))))
-    return  {"排局": [qimen_ju, jieqi, daygangzhi+"日", hourgangzhi+"時"], "孤虛":daykong_shikong(daygangzhi,hourgangzhi) , "值符":zhifu_zhishi1[0]["值符"], "直使":zhifu_zhishi1[0]["直使"], "天地盤":{ "地盤":earth_pan, "天盤":sky_pan}, "八星":star_new_dict, "八門":door_new_dict, "八神":god_new_dict}
+    sky_pan2 =  dict(zip(new_list([earth_pan.get(i) for i in list("坎艮震巽離坤兌乾")], shun(hourgangzhi)), new_list(list("坎艮震巽離坤兌乾"), zhifu_lokgong_g) ))    
+    if hourgangzhi[0] != "甲":
+        yi = hourgangzhi[0]
+    elif hourgangzhi[0] == "甲":
+        yi = hidden_jia.get(hourgangzhi)
+        
+    d = []
+    for i in eight_gua2:
+        a = {i: {"天":sky_pan.get(i), "地":earth_pan.get(i), "星":star_new_dict.get(i), "門":door_new_dict.get(i), "神":god_new_dict.get(i)}}
+        d.append(a)
+    
+    if sky_pan2.get(yi) != None:
+        tianyi = [sky_pan.get(sky_pan2.get(yi)),sky_pan2.get(yi), door_new_dict.get(sky_pan2.get(yi)), god_new_dict.get(sky_pan2.get(yi)), star_new_dict.get(sky_pan2.get(yi))]
+    elif sky_pan2.get(yi) == None:
+        yi = earth_pan.get(zhifu_zhishi1[0]["值符"][1])
+        tianyi = [yi, door_new_dict.get(sky_pan2.get(yi)), god_new_dict.get(sky_pan2.get(yi)), star_new_dict.get(sky_pan2.get(yi))]  
+    return  {"排局": [qimen_ju, jieqi, daygangzhi+"日", hourgangzhi+"時"], "空亡":daykong_shikong(daygangzhi,hourgangzhi) , "值符":zhifu_zhishi1[0]["值符"], "直使":zhifu_zhishi1[0]["直使"], "天乙":tianyi, "天地盤":{ "地盤":earth_pan, "天盤":sky_pan}, "八星":star_new_dict, "八門":door_new_dict, "八神":god_new_dict}, d
 
-#print(qimen("小雪", "乙未", "甲申"))
 #print(qimen("小寒", "甲寅", "壬申"))
+#print(qimen("小寒", "甲寅", "癸酉"))
 #print(shun( "辛未"))
