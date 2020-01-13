@@ -195,7 +195,7 @@ def qimen(jieqi, daygangzhi, hourgangzhi):
     star_new_dict = dict(zip(new_list(eight_gua2,zhifu_lokgong_g), new_list(eight_star2, zhifu_lokgong_o)))
     try:
         if zhishi_lokgong_g != "中":
-            door_new_dict = dict(zip(new_list(eight_gua,zhishi_lokgong_g), new_list(eight_door, zhishi_lokgong_o)))
+            door_new_dict = dict(zip(new_list(eight_gua2,zhishi_lokgong_g), new_list(eight_door2, zhishi_lokgong_o)))
         elif zhishi_lokgong_g == "中":
             door_new_dict = dict(zip(new_list(eight_gua2,eight_gua3[eight_gua3.index(zhifu_lokgong_g)+1]), new_list(eight_door, zhishi_lokgong_o)))
     except ValueError:
